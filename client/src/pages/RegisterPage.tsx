@@ -6,6 +6,8 @@ import { trpc } from "@/lib/trpc";
 import { Eye, EyeOff, Lock, Phone, User, Store } from "lucide-react";
 import { toast } from "sonner";
 
+const LOGO_ICON = "/9ebcf406-5555-4c22-ae85-9cf314f4a04f-removebg-preview.png";
+
 export default function RegisterPage() {
   const [, navigate] = useLocation();
   const [formData, setFormData] = useState({
@@ -35,7 +37,14 @@ export default function RegisterPage() {
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!formData.shopName || !formData.ownerName || !formData.phone || !formData.email || !formData.password) {
+    // Check all required fields
+    if (
+      !formData.shopName.trim() ||
+      !formData.ownerName.trim() ||
+      !formData.phone.trim() ||
+      !formData.email.trim() ||
+      !formData.password.trim()
+    ) {
       toast.error("Please fill in all required fields");
       return;
     }
@@ -62,9 +71,9 @@ export default function RegisterPage() {
         mtnPhone: formData.mtnPhone,
       });
       toast.success("Account created successfully!");
-      navigate("/dashboard");
+      navigate("/otp");
     } catch (error: any) {
-      toast.error(error.message || "Registration failed");
+      toast.error(error.message || "Registration error");
     } finally {
       setIsLoading(false);
     }
@@ -73,16 +82,23 @@ export default function RegisterPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 flex items-center justify-center p-4 py-8">
       <div className="w-full max-w-md bg-white rounded-2xl shadow-lg p-8">
+        {/* Logo */}
+        <div className="flex justify-center mb-6">
+          <div className="w-16 h-16 bg-[#001F3F] rounded-2xl flex items-center justify-center">
+            <img src={LOGO_ICON} alt="Daworks" className="w-10 h-10 object-contain" />
+          </div>
+        </div>
+
         {/* Heading */}
         <h1 className="text-2xl font-bold text-center text-gray-900 mb-1">
           Create your store
         </h1>
-        <p className="text-center text-gray-600 mb-8 text-sm">
+        <p className="text-center text-gray-600 mb-6 text-sm">
           It's free and quick.
         </p>
 
         {/* Form */}
-        <form onSubmit={handleRegister} className="space-y-4">
+        <form onSubmit={handleRegister} className="space-y-3">
           {/* Shop Name */}
           <div>
             <label className="block text-xs font-semibold text-gray-700 mb-2">
@@ -119,11 +135,29 @@ export default function RegisterPage() {
             </div>
           </div>
 
-          {/* Reception Accounts */}
-          <div className="bg-gray-50 p-4 rounded-lg">
-            <p className="text-sm font-semibold text-gray-900 mb-4">Payment accounts:</p>
+          {/* Main Phone Number */}
+          <div>
+            <label className="block text-xs font-semibold text-gray-700 mb-2">
+              PHONE NUMBER
+            </label>
+            <div className="relative">
+              <Phone className="absolute left-4 top-3 text-gray-400" size={18} />
+              <Input
+                type="tel"
+                name="phone"
+                placeholder="+237 6XX XXX XXX"
+                value={formData.phone}
+                onChange={handleChange}
+                className="pl-12 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#0066FF]"
+              />
+            </div>
+          </div>
 
-            {/* Orange Phone */}
+          {/* Payment Accounts */}
+          <div className="bg-gray-50 p-3 rounded-lg">
+            <p className="text-sm font-semibold text-gray-900 mb-3">Payment accounts:</p>
+
+            {/* Orange Money */}
             <div className="mb-3">
               <label className="block text-xs font-semibold text-gray-700 mb-2">
                 ORANGE MONEY NUMBER
@@ -136,15 +170,15 @@ export default function RegisterPage() {
                   placeholder="+237 6XX XXX XXX"
                   value={formData.orangePhone}
                   onChange={handleChange}
-                  className="pl-12 pr-12 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#0066FF]"
+                  className="pl-12 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#0066FF]"
                 />
-                <div className="absolute right-3 top-2.5 bg-orange-500 text-white px-2 py-1 rounded text-xs font-bold">
+                <span className="absolute right-3 top-3 bg-orange-500 text-white text-xs font-bold px-2 py-1 rounded">
                   Orange
-                </div>
+                </span>
               </div>
             </div>
 
-            {/* MTN Phone */}
+            {/* MTN Momo */}
             <div>
               <label className="block text-xs font-semibold text-gray-700 mb-2">
                 MTN MOMO NUMBER
@@ -157,19 +191,18 @@ export default function RegisterPage() {
                   placeholder="+237 6XX XXX XXX"
                   value={formData.mtnPhone}
                   onChange={handleChange}
-                  className="pl-12 pr-12 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#0066FF]"
+                  className="pl-12 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#0066FF]"
                 />
-                <div className="absolute right-3 top-2.5 bg-yellow-400 text-black px-2 py-1 rounded text-xs font-bold">
+                <span className="absolute right-3 top-3 bg-yellow-400 text-black text-xs font-bold px-2 py-1 rounded">
                   MTN
-                </div>
+                </span>
               </div>
             </div>
-          </div>
 
-          {/* Info */}
-          <div className="flex gap-2 text-xs text-gray-600 bg-blue-50 p-3 rounded-lg">
-            <span className="text-lg">ℹ️</span>
-            <span>At least one payment account is required to receive customer payments.</span>
+            <p className="text-xs text-gray-600 mt-2 flex items-start gap-2">
+              <span>ℹ️</span>
+              <span>At least one payment account is required to receive customer payments.</span>
+            </p>
           </div>
 
           {/* Email */}
@@ -187,7 +220,7 @@ export default function RegisterPage() {
             />
           </div>
 
-          {/* Security Section */}
+          {/* Password Section */}
           <div className="pt-2">
             <h3 className="text-sm font-semibold text-gray-900 mb-3">Security:</h3>
 
@@ -198,13 +231,13 @@ export default function RegisterPage() {
               </label>
               <div className="relative">
                 <Lock className="absolute left-4 top-3 text-gray-400" size={18} />
-                <input
+                <Input
                   type={showPassword ? "text" : "password"}
                   name="password"
                   placeholder="••••••••"
                   value={formData.password}
                   onChange={handleChange}
-                  className="w-full pl-12 pr-12 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#0066FF]"
+                  className="pl-12 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#0066FF]"
                 />
                 <button
                   type="button"
@@ -223,13 +256,13 @@ export default function RegisterPage() {
               </label>
               <div className="relative">
                 <Lock className="absolute left-4 top-3 text-gray-400" size={18} />
-                <input
+                <Input
                   type={showConfirmPassword ? "text" : "password"}
                   name="confirmPassword"
                   placeholder="••••••••"
                   value={formData.confirmPassword}
                   onChange={handleChange}
-                  className="w-full pl-12 pr-12 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#0066FF]"
+                  className="pl-12 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#0066FF]"
                 />
                 <button
                   type="button"
@@ -242,26 +275,28 @@ export default function RegisterPage() {
             </div>
           </div>
 
-          {/* Register Button */}
+          {/* Create Account Button */}
           <Button
             type="submit"
             disabled={isLoading}
             className="w-full bg-[#0066FF] hover:bg-[#0052CC] text-white font-semibold py-3 rounded-lg transition disabled:opacity-50 mt-6"
           >
-            {isLoading ? "Creating account..." : "Create account"}
+            {isLoading ? "Creating..." : "Create account"}
           </Button>
         </form>
 
-        {/* Login Link */}
-        <p className="text-center text-gray-600 mt-6 text-sm">
-          Already have an account?{" "}
-          <button
-            onClick={() => navigate("/login")}
-            className="text-[#0066FF] hover:underline font-semibold"
-          >
-            Sign in
-          </button>
-        </p>
+        {/* Sign In Link */}
+        <div className="mt-4 text-center">
+          <p className="text-gray-600 text-sm">
+            Already have an account?{" "}
+            <button
+              onClick={() => navigate("/login")}
+              className="text-[#0066FF] hover:text-[#0052CC] font-semibold"
+            >
+              Sign in
+            </button>
+          </p>
+        </div>
       </div>
     </div>
   );
