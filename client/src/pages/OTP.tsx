@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, CheckCircle } from "lucide-react";
 import { toast } from "sonner";
 
+const LOGO_ICON = "/9ebcf406-5555-4c22-ae85-9cf314f4a04f-removebg-preview.png";
+
 export default function OTP() {
   const [, navigate] = useLocation();
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
@@ -41,7 +43,7 @@ export default function OTP() {
   const handleVerifyOTP = async () => {
     const otpCode = otp.join("");
     if (otpCode.length < 6) {
-      toast.error("Veuillez entrer un code OTP valide");
+      toast.error("Please enter a valid OTP code");
       return;
     }
 
@@ -50,12 +52,12 @@ export default function OTP() {
       // Simulate OTP verification
       await new Promise((resolve) => setTimeout(resolve, 1000));
       setIsVerified(true);
-      toast.success("OTP vérifié avec succès!");
+      toast.success("OTP verified successfully!");
       setTimeout(() => {
         navigate("/onboarding");
       }, 2000);
     } catch (error: any) {
-      toast.error("Code OTP invalide");
+      toast.error("Invalid OTP code");
     } finally {
       setIsVerifying(false);
     }
@@ -64,10 +66,18 @@ export default function OTP() {
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
-        <div className="bg-white rounded-2xl shadow-lg p-8">
+        <div className="bg-white rounded-2xl shadow-lg p-8 relative">
+          {/* Logo */}
+          <div className="flex justify-center mb-6">
+            <div className="w-16 h-16 bg-[#001F3F] rounded-2xl flex items-center justify-center">
+              <img src={LOGO_ICON} alt="Daworks" className="w-10 h-10 object-contain" />
+            </div>
+          </div>
+
+          {/* Back Button */}
           <button
             onClick={() => navigate("/login")}
-            className="flex items-center gap-2 text-gray-600 mb-8 hover:text-gray-900"
+            className="absolute top-8 left-8 text-gray-600 hover:text-gray-900"
           >
             <ArrowLeft size={20} />
           </button>
