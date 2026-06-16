@@ -5,12 +5,11 @@ import { useCallback, useEffect, useMemo } from "react";
 
 type UseAuthOptions = {
   redirectOnUnauthenticated?: boolean;
-  redirectPath?: string;
+  redirectPath?: string | null;
 };
 
 export function useAuth(options?: UseAuthOptions) {
-  const { redirectOnUnauthenticated = false, redirectPath = getLoginUrl() } =
-    options ?? {};
+  const { redirectOnUnauthenticated = false, redirectPath } = options ?? {};
   const utils = trpc.useUtils();
 
   const meQuery = trpc.auth.me.useQuery(undefined, {
@@ -65,9 +64,13 @@ export function useAuth(options?: UseAuthOptions) {
     if (meQuery.isLoading || logoutMutation.isPending) return;
     if (state.user) return;
     if (typeof window === "undefined") return;
-    if (window.location.pathname === redirectPath) return;
 
-    window.location.href = redirectPath
+    // Determine redirect path: use provided path, or fallback to getLoginUrl()
+    const finalRedirectPath = redirectPath ?? getLoginUrl() ?? "/login";
+    
+    if (window.location.pathname === finalRedirectPath) return;
+
+    window.location.href = finalRedirectPath;
   }, [
     redirectOnUnauthenticated,
     redirectPath,
