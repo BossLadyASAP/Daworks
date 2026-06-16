@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
-import { ChevronRight, Check, QrCode, Package, TrendingUp } from "lucide-react";
+import { ChevronRight, Check, QrCode, TrendingUp } from "lucide-react";
+
+const LOGO_ICON = "/9ebcf406-5555-4c22-ae85-9cf314f4a04f-removebg-preview.png";
 
 const steps = [
   {
@@ -43,6 +45,13 @@ export default function Onboarding() {
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         <div className="bg-white rounded-2xl shadow-lg p-8 relative">
+          {/* Logo */}
+          <div className="flex justify-center mb-6">
+            <div className="w-16 h-16 bg-[#001F3F] rounded-2xl flex items-center justify-center">
+              <img src={LOGO_ICON} alt="Daworks" className="w-10 h-10 object-contain" />
+            </div>
+          </div>
+
           {/* Skip Button */}
           <button
             onClick={handleSkip}
@@ -56,22 +65,18 @@ export default function Onboarding() {
             {steps.map((_, index) => (
               <div
                 key={index}
-                className={`h-2 w-2 rounded-full transition ${
-                  index === currentStep ? "bg-[#0066FF] w-8" : "bg-gray-300"
+                className={`h-2 rounded-full transition-all ${
+                  index === currentStep ? "w-8 bg-[#0066FF]" : "w-2 bg-gray-300"
                 }`}
               />
             ))}
           </div>
 
-          {/* Icon */}
-          <div className="flex justify-center mb-8">
-            <div className="w-32 h-32 bg-gray-100 rounded-2xl flex items-center justify-center">
+          {/* Content */}
+          <div className="text-center mb-8">
+            <div className="mb-6 flex justify-center">
               {step.icon}
             </div>
-          </div>
-
-          {/* Content */}
-          <div className="text-center mb-12">
             <h1 className="text-2xl font-bold text-gray-900 mb-3">
               {step.title}
             </h1>
